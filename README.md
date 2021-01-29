@@ -133,6 +133,40 @@ python manage.py createsuperuser
 Пока запущены контейнеры infra_sp2_web_1 и infra_sp2_db_1, приложение доступно по адресу http://localhost:8000
 
 
+### Заполнение базы начальными данными
+
+Скопируем fixtures.json в контейнер infra_sp2_web_1:
+
+```
+sudo docker cp /infra_sp2/fixtures.json <ID infra_sp2_web_1>:/code/ 
+```
+
+Заходим в контейнер:
+
+```
+docker exec -it <CONTAINER ID> bash
+```
+где <CONTAINER ID> - ID "infra_sp2_web_1"
+
+
+Выполняем команды:
+
+```
+python3 manage.py shell  
+# выполнить в открывшемся терминале:
+>>> from django.contrib.contenttypes.models import ContentType
+>>> ContentType.objects.all().delete()
+>>> quit()
+
+python manage.py loaddata fixtures.json 
+```
+
+Готово.
+
+
+
+
+
 
 
 
