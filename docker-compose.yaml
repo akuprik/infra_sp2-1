@@ -21,14 +21,13 @@ services:
    # build: .
     image: ilyukevich/yamdb:v1
     restart: always
-    command: >
-           bash -c "python manage.py makemigrations
-           && python manage.py makemigrations api
-           && python manage.py migrate
-           && gunicorn api_yamdb.wsgi:application --bind 0.0.0.0:8000"
+    command: > 
+           bash -c "python manage.py makemigrations 
+	   && python manage.py makemigrations api 
+           && python manage.py migrate 
+           && gunicorn api_yamdb.wsgi:application --bind 0.0.0.0:8000" 
     ports:
-      - "8000:8000"
-    # "зависит от", 
+      - "8000:8000" 
     depends_on:
       - db
     env_file:
