@@ -1,14 +1,19 @@
-# создать образ на основе базового слоя python (там будет ОС и интерпретатор Python)
-FROM python:3.8.5
+#Сделал так. В Dockerfile указал образ, который мы готовили на практике (ilyukevich/yamdb:v1),
+#но оставил образ python:3.8.5, т.к. падают тесты если его убрать.
+#В docker-compose для создания второго контейнера WEB указал взять образ из Dockerfile.
+#В Dockerfile перенес все команды по автоматизации процессов.
+#FROM python:3.8.5
 
-# создать директорию /code
+FROM ilyukevich/yamdb:v1
+
 RUN mkdir /code
 
-# скопировать файл requirements.txt из директории, в которой лежит докерфайл, в директорию /code
 COPY requirements.txt /code
 
-# выполнить команду (как в терминале, с тем же синтаксисом) для установки пакетов из requirements.txt
-RUN pip install -r /code/requirements.txt
+RUN pip install -r /code/requirements.txt && \
+    python manage.py makemigrations && \
+    python manage.py makemigrations api && \
+    python manage.py migrate
 
-# при старте контейнера выполнить 
+
 CMD gunicorn api_yamdb.wsgi:application --bind 0.0.0.0:8000
